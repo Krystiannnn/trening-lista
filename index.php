@@ -13,30 +13,47 @@
    require_once("connect.php");
 
    $conn = new mysqli($dbhost, $dbuser, $dbpassword, $dbname);
-   $q = $conn->query("SELECT * FROM listaa");
+   
 
+   if(isset($_REQUEST['produkt']) && $_REQUEST['produkt'] != ""){
+      
+      $q = $conn->prepare("INSERT INTO listaa VALUES (NULL, ?, 0)");
+      $q->bind_param('s', $_REQUEST['produkt']);
+      $q->execute();
+      
+   }
+    //łapanie issetem linku id usuwania 
+   if(isset($_REQUEST['removeprodukt'])){
+
+      $q = $conn->prepare("DELETE FROM listaa WHERE id=?");
+      $q->bind_param('i', $_REQUEST['removeprodukt']);
+      $q->execute();
+   } 
+
+   $q = $conn->query("SELECT * FROM listaa");
+  
    while($row = $q->fetch_assoc()){
-    if($row['status']){
-        echo '<li class="status">';
+    if($row['status']){    //przekreślanie przez klase 
+       echo '<li class="status">';
     } else {
-        echo "<li>";
+     echo "<li>";
     }
    $name = $row['name'];
-   
   
-   echo $name; 
+  
+  echo $name; 
+  echo '<a href="index.php?removeprodukt='.$row['id'].'">Usuń</a>';
+   
    echo "<br>";
-   echo "</li>";
+  echo "</li>";
    }
- 
+   //var_dump($_REQUEST);
 ?>
-<form action="index.php" method="post">
+<form action="index.php" method="get">
     <br>
-    Login:<br><input type="text" name="login" >
+    produkt:<br><input type="text" name="produkt" id="produkt" >
     <br>
-    Hasło:<br><input type="password" name="haslo">
-    <br>
-    <input type="submit" value="Zaloguj się"  >
+             <input type="submit" value="dodaj do listy"  >
 </form>
 </body>
 </html>
