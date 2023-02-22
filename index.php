@@ -20,6 +20,8 @@
       $q = $conn->prepare("INSERT INTO listaa VALUES (NULL, ?, 0)");
       $q->bind_param('s', $_REQUEST['produkt']);
       $q->execute();
+
+      
       
    }
     //łapanie issetem linku id usuwania 
@@ -30,20 +32,28 @@
       $q->execute();
    } 
 
+   if(isset($_REQUEST['skreslprodukt'])){
+
+      $q = $conn->prepare("UPDATE listaa SET statu=1 WHERE id=?");
+      $q->bind_param('i', $_REQUEST['skreslprodukt']);
+      $q->execute();
+   } 
+
    $q = $conn->query("SELECT * FROM listaa");
   
    while($row = $q->fetch_assoc()){
-    if($row['status']){    //przekreślanie przez klase 
-       echo '<li class="status">';
+    if($row['statu']){    //przekreślanie przez klase 
+      echo '<li class="status">';
+       
     } else {
-     echo "<li>";
+      echo "<li>";
     }
-   $name = $row['name'];
+   $name = $row['nam'];
   
-  
+   echo '<a href="index.php?skreslprodukt='.$row['id'].'">Skreśl</a>';
   echo $name; 
   echo '<a href="index.php?removeprodukt='.$row['id'].'">Usuń</a>';
-   
+  
    echo "<br>";
   echo "</li>";
    }
