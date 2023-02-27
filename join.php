@@ -13,10 +13,12 @@
   require_once("dbconnect.php");
   $conn = new mysqli($dbhost, $dbuser, $dbpassword, $dbname);
     
-      $id = ('6');
+    
+
+      
  
     
-  
+      if(isset($_REQUEST['number']) && $_REQUEST['number'] != "" ){
       $q = $conn->prepare(
         "SELECT `wypozyczenia`.`data_wyp`, `dane_wypozyczen`.`cena_doba`, `klienci`.`imie_klienta`, `samochody`.`marka`
          FROM `wypozyczenia` 
@@ -25,7 +27,7 @@
          LEFT JOIN `samochody` ON `dane_wypozyczen`.`id_samochodu` = `samochody`.`id_samochodu`
          WHERE `klienci`.`id_klienta` = ?");
           
-      $q->bind_param("i", $id );
+      $q->bind_param("i", $_REQUEST['number'] );
       $q->execute();
       
       $wynik = $q->get_result();
@@ -43,12 +45,17 @@
     $date = $row['data_wyp'];
     $car = $row['marka'];
     
+    
     echo $naame."<br>";
     echo $date."<br>";
     echo $car."<br>";
-
     
-    }
+    
+    
+    } } else {
+
+      echo "brak id";
+    } 
    
     
 
